@@ -30,7 +30,7 @@ private:
 	bool Curr;
 };
 
-UCLASS()
+UCLASS(ClassGroup=(OFSM))
 class OFSMRUNTIME_API UOFSMComponent : public UActorComponent
 {
 	GENERATED_BODY()
