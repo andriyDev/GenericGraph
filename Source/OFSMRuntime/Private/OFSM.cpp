@@ -4,6 +4,98 @@
 
 #define LOCTEXT_NAMESPACE "OFSM"
 
+#define ENSURE_CAST(Type, Var, Expr) Type* Var = Cast<Type>(RHS); if (Var) { Expr } else { return false; }
+
+bool UOFSM_Integer::TestEquals(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Integer, i, return Value == i->Value; )
+}
+
+bool UOFSM_Integer::TestGreater(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Integer, i, return Value > i->Value; )
+}
+
+bool UOFSM_Integer::TestLesser(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Integer, i, return Value < i->Value; )
+}
+
+bool UOFSM_Integer::TestGreaterOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Integer, i, return Value >= i->Value; )
+}
+
+bool UOFSM_Integer::TestLesserOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Integer, i, return Value <= i->Value; )
+}
+
+bool UOFSM_Integer::Test()
+{
+	return Value != 0;
+}
+
+bool UOFSM_String::TestEquals(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_String, i, return Value == i->Value; )
+}
+
+bool UOFSM_String::TestGreater(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_String, i, return Value > i->Value; )
+}
+
+bool UOFSM_String::TestLesser(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_String, i, return Value < i->Value; )
+}
+
+bool UOFSM_String::TestGreaterOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_String, i, return Value >= i->Value; )
+}
+
+bool UOFSM_String::TestLesserOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_String, i, return Value <= i->Value; )
+}
+
+bool UOFSM_String::Test()
+{
+	return Value != FString("");
+}
+
+bool UOFSM_Boolean::TestEquals(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Boolean, i, return Value == i->Value; )
+}
+
+bool UOFSM_Boolean::TestGreater(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Boolean, i, return Value > i->Value; )
+}
+
+bool UOFSM_Boolean::TestLesser(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Boolean, i, return Value < i->Value; )
+}
+
+bool UOFSM_Boolean::TestGreaterOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Boolean, i, return Value >= i->Value; )
+}
+
+bool UOFSM_Boolean::TestLesserOrEqual(UOFSM_Variable* RHS)
+{
+	ENSURE_CAST(UOFSM_Boolean, i, return Value <= i->Value; )
+}
+
+bool UOFSM_Boolean::Test()
+{
+	return Value;
+}
+
 UOFSM::UOFSM()
 {
 	NodeType = UOFSMNode::StaticClass();
@@ -23,99 +115,6 @@ UOFSM::~UOFSM()
 
 }
 
-void UOFSM::Print(bool ToConsole /*= true*/, bool ToScreen /*= true*/)
-{
-	int Level = 0;
-	TArray<UOFSMNode*> CurrLevelNodes = RootNodes;
-	TArray<UOFSMNode*> NextLevelNodes;
-
-	while (CurrLevelNodes.Num() != 0)
-	{
-		for (int i = 0; i < CurrLevelNodes.Num(); ++i)
-		{
-			UOFSMNode* Node = CurrLevelNodes[i];
-			check(Node != nullptr);
-
-			FString Message = FString::Printf(TEXT("%s, Level %d"), *Node->GetDescription().ToString(), Level);
-
-			if (ToConsole)
-			{
-				LOG_INFO(TEXT("%s"), *Message);
-			}
-
-			if (ToScreen && GEngine != nullptr)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Blue, Message);
-			}
-
-			for (int j = 0; j < Node->ChildrenNodes.Num(); ++j)
-			{
-				NextLevelNodes.Add(Node->ChildrenNodes[j]);
-			}
-		}
-
-		CurrLevelNodes = NextLevelNodes;
-		NextLevelNodes.Reset();
-		++Level;
-	}
-}
-
-int UOFSM::GetLevelNum() const
-{
-	int Level = 0;
-	TArray<UOFSMNode*> CurrLevelNodes = RootNodes;
-	TArray<UOFSMNode*> NextLevelNodes;
-
-	while (CurrLevelNodes.Num() != 0)
-	{
-		for (int i = 0; i < CurrLevelNodes.Num(); ++i)
-		{
-			UOFSMNode* Node = CurrLevelNodes[i];
-			check(Node != nullptr);
-
-			for (int j = 0; j < Node->ChildrenNodes.Num(); ++j)
-			{
-				NextLevelNodes.Add(Node->ChildrenNodes[j]);
-			}
-		}
-
-		CurrLevelNodes = NextLevelNodes;
-		NextLevelNodes.Reset();
-		++Level;
-	}
-
-	return Level;
-}
-
-void UOFSM::GetNodesByLevel(int Level, TArray<UOFSMNode*>& Nodes)
-{
-	int CurrLEvel = 0;
-	TArray<UOFSMNode*> NextLevelNodes;
-
-	Nodes = RootNodes;
-
-	while (Nodes.Num() != 0)
-	{
-		if (CurrLEvel == Level)
-			break;
-
-		for (int i = 0; i < Nodes.Num(); ++i)
-		{
-			UOFSMNode* Node = Nodes[i];
-			check(Node != nullptr);
-
-			for (int j = 0; j < Node->ChildrenNodes.Num(); ++j)
-			{
-				NextLevelNodes.Add(Node->ChildrenNodes[j]);
-			}
-		}
-
-		Nodes = NextLevelNodes;
-		NextLevelNodes.Reset();
-		++CurrLEvel;
-	}
-}
-
 void UOFSM::ClearGraph()
 {
 	for (int i = 0; i < AllNodes.Num(); ++i)
@@ -128,7 +127,23 @@ void UOFSM::ClearGraph()
 	}
 
 	AllNodes.Empty();
-	RootNodes.Empty();
+}
+
+UOFSMNode* UOFSM::FindStateById(FName Id) const
+{
+	for (UOFSMNode* Node : AllNodes)
+	{
+		if (Node->Identifier == Id)
+		{
+			return Node;
+		}
+	}
+	return nullptr;
+}
+
+UOFSMNode* UOFSM::GetInitialState() const
+{
+	return FindStateById(InitialState);
 }
 
 #undef LOCTEXT_NAMESPACE

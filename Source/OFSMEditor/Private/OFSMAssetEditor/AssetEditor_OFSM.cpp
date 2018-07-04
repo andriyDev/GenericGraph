@@ -16,8 +16,6 @@
 #include "EdGraph_OFSM.h"
 #include "EdNode_OFSMNode.h"
 #include "EdNode_OFSMEdge.h"
-#include "AutoLayout/TreeLayoutStrategy.h"
-#include "AutoLayout/ForceDirectedLayoutStrategy.h"
 
 #define LOCTEXT_NAMESPACE "AssetEditor_OFSM"
 
@@ -297,11 +295,6 @@ void FAssetEditor_OFSM::BindCommands()
 		FExecuteAction::CreateSP(this, &FAssetEditor_OFSM::GraphSettings),
 		FCanExecuteAction::CreateSP(this, &FAssetEditor_OFSM::CanGraphSettings)
 	);
-
-	ToolkitCommands->MapAction(FEditorCommands_OFSM::Get().AutoArrange,
-		FExecuteAction::CreateSP(this, &FAssetEditor_OFSM::AutoArrange),
-		FCanExecuteAction::CreateSP(this, &FAssetEditor_OFSM::CanAutoArrange)
-	);
 }
 
 void FAssetEditor_OFSM::CreateEdGraph()
@@ -333,10 +326,6 @@ void FAssetEditor_OFSM::CreateCommandList()
 	GraphEditorCommands->MapAction(FEditorCommands_OFSM::Get().GraphSettings,
 		FExecuteAction::CreateRaw(this, &FAssetEditor_OFSM::GraphSettings),
 		FCanExecuteAction::CreateRaw(this, &FAssetEditor_OFSM::CanGraphSettings));
-
-	GraphEditorCommands->MapAction(FEditorCommands_OFSM::Get().AutoArrange,
-		FExecuteAction::CreateRaw(this, &FAssetEditor_OFSM::AutoArrange),
-		FCanExecuteAction::CreateRaw(this, &FAssetEditor_OFSM::CanAutoArrange));
 
 	GraphEditorCommands->MapAction(FGenericCommands::Get().SelectAll,
 		FExecuteAction::CreateRaw(this, &FAssetEditor_OFSM::SelectAllNodes),
@@ -680,45 +669,6 @@ void FAssetEditor_OFSM::GraphSettings()
 bool FAssetEditor_OFSM::CanGraphSettings() const
 {
 	return true;
-}
-
-void FAssetEditor_OFSM::AutoArrange()
-{
-	UEdGraph_OFSM* EdGraph = Cast<UEdGraph_OFSM>(EditingGraph->EdGraph);
-	check(EdGraph != nullptr);
-
-	const FScopedTransaction Transaction(LOCTEXT("OFSMEditorAutoArrange", "Generic Graph Editor: Auto Arrange"));
-
-	EdGraph->Modify();
-
-	UAutoLayoutStrategy* LayoutStrategy = nullptr;
-	switch (GenricGraphEditorSettings->AutoLayoutStrategy)
-	{
-	case EAutoLayoutStrategy::Tree:
-		LayoutStrategy = NewObject<UAutoLayoutStrategy>(EdGraph, UTreeLayoutStrategy::StaticClass());
-		break;
-	case EAutoLayoutStrategy::ForceDirected:
-		LayoutStrategy = NewObject<UAutoLayoutStrategy>(EdGraph, UForceDirectedLayoutStrategy::StaticClass());
-		break;
-	default:
-		break;
-	}
-
-	if (LayoutStrategy != nullptr)
-	{
-		LayoutStrategy->Settings = GenricGraphEditorSettings;
-		LayoutStrategy->Layout(EdGraph);
-		LayoutStrategy->ConditionalBeginDestroy();
-	}
-	else
-	{
-		LOG_ERROR(TEXT("FAssetEditor_OFSM::AutoArrange LayoutStrategy is null."));
-	}
-}
-
-bool FAssetEditor_OFSM::CanAutoArrange() const
-{
-	return EditingGraph != nullptr && Cast<UEdGraph_OFSM>(EditingGraph->EdGraph) != nullptr;
 }
 
 void FAssetEditor_OFSM::OnRenameNode()

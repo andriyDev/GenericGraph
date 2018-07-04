@@ -38,9 +38,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "OFSMNode")
 	UOFSM* GetGraph() const;
 
+	UFUNCTION(BlueprintPure, Category = "OFSM")
+		TArray<UOFSMEdge*> GetNodeTransitions() const;
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MissionNode")
 	FText GetDescription() const;
 	virtual FText GetDescription_Implementation() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "OFSMNode")
+		FName Identifier;
 
 	//////////////////////////////////////////////////////////////////////////
 #if WITH_EDITORONLY_DATA

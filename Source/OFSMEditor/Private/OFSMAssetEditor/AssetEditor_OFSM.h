@@ -82,9 +82,6 @@ private:
 	void GraphSettings();
 	bool CanGraphSettings() const;
 
-	void AutoArrange();
-	bool CanAutoArrange() const;
-
 	void OnRenameNode();
 	bool CanRenameNodes() const;
 

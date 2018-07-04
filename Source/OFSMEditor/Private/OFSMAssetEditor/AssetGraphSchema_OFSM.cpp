@@ -5,8 +5,6 @@
 #include "ConnectionDrawingPolicy_OFSM.h"
 #include "GraphEditorActions.h"
 #include "Framework/Commands/GenericCommands.h"
-#include "AutoLayout/ForceDirectedLayoutStrategy.h"
-#include "AutoLayout/TreeLayoutStrategy.h"
 
 #define LOCTEXT_NAMESPACE "AssetSchema_OFSM"
 
@@ -208,7 +206,7 @@ void UAssetGraphSchema_OFSM::GetGraphContextActions(FGraphContextMenuBuilder& Co
 
 	if (!Graph->NodeType->HasAnyClassFlags(CLASS_Abstract))
 	{
-		TSharedPtr<FAssetSchemaAction_OFSM_NewNode> NewNodeAction(new FAssetSchemaAction_OFSM_NewNode(LOCTEXT("OFSMNodeAction", "Generic Graph Node"), Desc, AddToolTip, 0));
+		TSharedPtr<FAssetSchemaAction_OFSM_NewNode> NewNodeAction(new FAssetSchemaAction_OFSM_NewNode(LOCTEXT("OFSMNodeAction", "OFSM Node"), Desc, AddToolTip, 0));
 		NewNodeAction->NodeTemplate = NewObject<UEdNode_OFSMNode>(ContextMenuBuilder.OwnerOfTemporaries);
 		NewNodeAction->NodeTemplate->OFSMNode = NewObject<UOFSMNode>(NewNodeAction->NodeTemplate, Graph->NodeType);
 		NewNodeAction->NodeTemplate->OFSMNode->Graph = Graph;
@@ -238,7 +236,7 @@ void UAssetGraphSchema_OFSM::GetGraphContextActions(FGraphContextMenuBuilder& Co
 				Desc = FText::FromString(Title);
 			}
 
-			TSharedPtr<FAssetSchemaAction_OFSM_NewNode> Action(new FAssetSchemaAction_OFSM_NewNode(LOCTEXT("OFSMNodeAction", "Generic Graph Node"), Desc, AddToolTip, 0));
+			TSharedPtr<FAssetSchemaAction_OFSM_NewNode> Action(new FAssetSchemaAction_OFSM_NewNode(LOCTEXT("OFSMNodeAction", "OFSM Node"), Desc, AddToolTip, 0));
 			Action->NodeTemplate = NewObject<UEdNode_OFSMNode>(ContextMenuBuilder.OwnerOfTemporaries);
 			Action->NodeTemplate->OFSMNode = NewObject<UOFSMNode>(Action->NodeTemplate, NodeType);
 			Action->NodeTemplate->OFSMNode->Graph = Graph;
@@ -311,15 +309,13 @@ const FPinConnectionResponse UAssetGraphSchema_OFSM::CanCreateConnection(const U
 		return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, LOCTEXT("PinErrorOutput", "Can't connect output node to output node"));
 	}
 
-	// check for cycles
-	FNodeVisitorCycleChecker CycleChecker;
-	if (!CycleChecker.CheckForLoop(A->GetOwningNode(), B->GetOwningNode()))
-	{
-		return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, LOCTEXT("PinErrorCycle", "Can't create a graph cycle"));
-	}
-
 	UEdNode_OFSMNode* EdNode_A = Cast<UEdNode_OFSMNode>(A->GetOwningNode());
 	UEdNode_OFSMNode* EdNode_B = Cast<UEdNode_OFSMNode>(B->GetOwningNode());
+
+	if (EdNode_A->OFSMNode->Edges.Contains(EdNode_B->OFSMNode))
+	{
+		return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, LOCTEXT("PinErrorOutput", "Transition already exists between nodes"));
+	}
 
 	if (EdNode_A == nullptr || EdNode_B == nullptr)
 	{
@@ -372,14 +368,7 @@ bool UAssetGraphSchema_OFSM::CreateAutomaticConversionNodeAndConnections(UEdGrap
 	Action.NodeTemplate->SetEdge(NewObject<UOFSMEdge>(Action.NodeTemplate, Graph->EdgeType));
 	UEdNode_OFSMEdge* EdgeNode = Cast<UEdNode_OFSMEdge>(Action.PerformAction(NodeA->GetGraph(), nullptr, InitPos, false));
 
-	if (A->Direction == EGPD_Output)
-	{
-		EdgeNode->CreateConnections(NodeA, NodeB);
-	}
-	else
-	{
-		EdgeNode->CreateConnections(NodeB, NodeA);
-	}
+	EdgeNode->CreateConnections(NodeA, NodeB);
 
 	return true;
 }

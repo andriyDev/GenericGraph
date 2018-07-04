@@ -61,4 +61,14 @@ UOFSM* UOFSMNode::GetGraph() const
 	return Graph;
 }
 
+TArray<UOFSMEdge*> UOFSMNode::GetNodeTransitions() const
+{
+	TArray<UOFSMEdge*> Transitions;
+	Edges.GenerateValueArray(Transitions);
+	Transitions.Sort([](const UOFSMEdge& LHS, const UOFSMEdge& RHS) {
+		return LHS.TransitionPriority < RHS.TransitionPriority;
+	});
+	return Transitions;
+}
+
 #undef LOCTEXT_NAMESPACE

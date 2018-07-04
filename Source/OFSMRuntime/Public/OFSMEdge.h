@@ -5,6 +5,7 @@
 #include "OFSMEdge.generated.h"
 
 class UOFSM;
+class UOFSM_Variable;
 
 UCLASS(Blueprintable)
 class OFSMRUNTIME_API UOFSMEdge : public UObject
@@ -26,4 +27,13 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "OFSMEdge")
 	UOFSM* GetGraph() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "OFSMEdge")
+		FString Condition;
+
+	UPROPERTY(EditDefaultsOnly, Category = "OFSMEdge")
+		int TransitionPriority;
+	
+	UFUNCTION(BlueprintCallable, Category = "OFSMEdge")
+		void CompileCondition();
 };

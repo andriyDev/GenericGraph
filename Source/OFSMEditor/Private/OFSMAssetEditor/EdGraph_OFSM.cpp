@@ -96,23 +96,10 @@ void UEdGraph_OFSM::RebuildOFSM()
 	for (int i = 0; i < Graph->AllNodes.Num(); ++i)
 	{
 		UOFSMNode* Node = Graph->AllNodes[i];
-		if (Node->ParentNodes.Num() == 0)
-		{
-			Graph->RootNodes.Add(Node);
-
-			SortNodes(Node);
-		}
 
 		Node->Graph = Graph;
 		Node->Rename(nullptr, Graph, REN_DontCreateRedirectors | REN_DoNotDirty);
 	}
-
-	Graph->RootNodes.Sort([&](const UOFSMNode& L, const UOFSMNode& R)
-	{
-		UEdNode_OFSMNode* EdNode_LNode = NodeMap[&L];
-		UEdNode_OFSMNode* EdNode_RNode = NodeMap[&R];
-		return EdNode_LNode->NodePosX < EdNode_RNode->NodePosX;
-	});
 }
 
 UOFSM* UEdGraph_OFSM::GetOFSM() const

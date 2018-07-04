@@ -30,16 +30,6 @@ void FAssetEditorToolbar_OFSM::FillOFSMToolbar(FToolBarBuilder& ToolbarBuilder)
 	}
 	ToolbarBuilder.EndSection();
 
-	ToolbarBuilder.BeginSection("Util");
-	{
-		ToolbarBuilder.AddToolBarButton(FEditorCommands_OFSM::Get().AutoArrange,
-			NAME_None,
-			LOCTEXT("AutoArrange_Label", "Auto Arrange"),
-			LOCTEXT("AutoArrange_ToolTip", "Auto arrange nodes, not perfect, but still handy"),
-			FSlateIcon(FOFSMEditorStyle::GetStyleSetName(), "OFSMEditor.AutoArrange"));
-	}
-	ToolbarBuilder.EndSection();
-
 }
 
 

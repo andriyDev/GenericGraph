@@ -1,4 +1,7 @@
+
 #include "OFSMEdge.h"
+
+#include "OFSM.h"
 
 UOFSMEdge::UOFSMEdge()
 {
