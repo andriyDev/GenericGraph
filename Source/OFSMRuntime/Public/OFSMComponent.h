@@ -30,7 +30,7 @@ private:
 	bool Curr;
 };
 
-UCLASS(ClassGroup=(OFSM))
+UCLASS(Blueprintable, BlueprintType, ClassGroup=(OFSM), meta = (BlueprintSpawnableComponent))
 class OFSMRUNTIME_API UOFSMComponent : public UActorComponent
 {
 	GENERATED_BODY()

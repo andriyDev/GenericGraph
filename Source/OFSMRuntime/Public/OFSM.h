@@ -33,8 +33,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFSM")
 	bool bEdgeEnabled;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "OFSM")
-		FName InitialState;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "OFSM")
+		FString InitialState;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFSM")
 		TSubclassOf<class UOFSMHandler> HandlerClass;
@@ -42,7 +42,7 @@ public:
 	void ClearGraph();
 
 	UFUNCTION(BlueprintPure, Category = "OFSM")
-		UOFSMNode* FindStateById(FName Id) const;
+		UOFSMNode* FindStateById(FString Id) const;
 
 	UFUNCTION(BlueprintPure, Category = "OFSM")
 		UOFSMNode* GetInitialState() const;

@@ -45,8 +45,8 @@ public:
 	FText GetDescription() const;
 	virtual FText GetDescription_Implementation() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = "OFSMNode")
-		FName Identifier;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFSMNode")
+		FString Identifier;
 
 	//////////////////////////////////////////////////////////////////////////
 #if WITH_EDITORONLY_DATA

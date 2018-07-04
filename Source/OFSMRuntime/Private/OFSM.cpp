@@ -37,7 +37,7 @@ void UOFSM::ClearGraph()
 	AllNodes.Empty();
 }
 
-UOFSMNode* UOFSM::FindStateById(FName Id) const
+UOFSMNode* UOFSM::FindStateById(FString Id) const
 {
 	for (UOFSMNode* Node : AllNodes)
 	{

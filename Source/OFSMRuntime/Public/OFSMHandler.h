@@ -12,4 +12,7 @@ class OFSMRUNTIME_API UOFSMHandler : public UObject
 public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "OFSM")
 		void BindFSM(class UOFSMComponent* Component);
+
+	UFUNCTION(BlueprintCallable, Category = "OFSM")
+		class UOFSMTransitionValid* AddBinding(class UOFSMComponent* Component, FName Id);
 };
