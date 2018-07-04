@@ -9,6 +9,27 @@
 
 #include "OFSMComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransitionValid, UOFSMTransitionValid*, Source, UOFSMEdge*, Transition);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStateChanged, UOFSMNode*, NewNode, UOFSMEdge*, FollowedTransition);
+
+UCLASS(BlueprintType)
+class OFSMRUNTIME_API UOFSMTransitionValid : public UObject
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintAssignable, Category = "OFSM Transition")
+		FTransitionValid Validity;
+
+	bool Evaluate(UOFSMEdge* Edge);
+
+	UFUNCTION(BlueprintCallable, Category = "OFSM Transition")
+		void ReturnValue(bool Valid);
+
+private:
+	bool Curr;
+};
+
 UCLASS()
 class OFSMRUNTIME_API UOFSMComponent : public UActorComponent
 {
@@ -17,19 +38,30 @@ public:
 	UPROPERTY(EditAnywhere, Category = "OFSM")
 		UOFSM* FSM;
 
+	UPROPERTY(BlueprintReadWrite, Category = "OFSM")
+		UOFSMNode* State;
+
+	UPROPERTY(BlueprintReadOnly, Category = "OFSM")
+		UOFSMHandler* Handler;
+
+	UPROPERTY(BlueprintReadWrite, Category = "OFSM")
+		TMap<FName, UOFSMTransitionValid*> TransitionValidity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OFSM")
+		bool DefaultTransitionState;
+
+	UPROPERTY(BlueprintAssignable, Category = "OFSM")
+		FStateChanged OnStateChange;
+
 	UFUNCTION(BlueprintCallable, Category = "OFSM")
 		void InitializeFSM();
 
 	UFUNCTION(BlueprintCallable, Category = "OFSM")
 		void UpdateState();
 
-	UFUNCTION(BlueprintCallable, Category = "OFSM")
-		void AddVariable(UOFSM_Variable* Variable);
+	UFUNCTION(BlueprintPure, Category = "OFSM")
+		UOFSMEdge* GetFirstValidTransition();
 
-	UPROPERTY()
-		UOFSMNode* State;
-
-private:
-	UPROPERTY()
-		TSet<UOFSM_Variable*> Vars;
+	UFUNCTION(BlueprintPure, Category = "OFSM")
+		TArray<UOFSMEdge*> GetValidTransitions();
 };

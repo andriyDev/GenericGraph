@@ -29,7 +29,7 @@ public:
 	UOFSM* GetGraph() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "OFSMEdge")
-		FString Condition;
+		FName Identifier;
 
 	UPROPERTY(EditDefaultsOnly, Category = "OFSMEdge")
 		int TransitionPriority;
