@@ -27,6 +27,7 @@ The final major piece is adding custom node types/edge types. You can create chi
 
 It is also important to mention that using "Update State" is optional. You can make your own state updater. For example, in a dialogue system, the valid transitions could be responses that the player could choose from, but the state should switch to the node that corresponds to the response the player selects. The functions "Get First Valid Transition" and "Get Valid Transitions" are utilities that can help with this.
 
-## Credits
+Credits
+=====
 
 Major thanks to jinyuliao for the base of this plugin.
