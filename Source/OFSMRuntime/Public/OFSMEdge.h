@@ -33,7 +33,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "OFSMEdge")
 		int TransitionPriority;
-	
-	UFUNCTION(BlueprintCallable, Category = "OFSMEdge")
-		void CompileCondition();
 };
