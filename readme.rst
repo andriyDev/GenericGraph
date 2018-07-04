@@ -3,7 +3,8 @@ OFSM
 
 This is an open source, finite state machine (FSM) system for Unreal. The original GenericGraph project from which this has forked was flawed in that it could not support cycles (a relatively common thing for finite state machines).
 
-## Usage
+Usage
+=====
 
 The first step is to create a finite state machine. Right click on your content browser and select OFSM > OFSM. Opening this asset will open an empty graph.
 
@@ -22,7 +23,7 @@ After this, you may call "Update State" to have the component change states (if 
 You can get and set the current state directly from Blueprints. This allows you to change behaviour based on the current state.
 You can also bind an event to the component's OnStateChange event dispatcher. This will notify you just before a transition occurs, so that you can clean up the previous state, and then setup the new state before it is assigned (this is handled for you).
 
-The final major piece is adding custom node types/edge types. You can create child blueprints of OFSMNode and OFSMEdge. This allows you to store more information in each bit, allowing you to extend the FSM system further. For example, adding a text property to nodes can be an NPC's text, and then another text property can be a player's response leading to another node.
+The final major piece is adding custom node types/edge types. You can create child blueprints of OFSMNode and OFSMEdge. This allows you to store more information in each bit, allowing you to extend the FSM system further. For example, adding a text property to nodes can be an NPC's text, and then another text property on the edges can be a player's response leading to another node.
 
 It is also important to mention that using "Update State" is optional. You can make your own state updater. For example, in a dialogue system, the valid transitions could be responses that the player could choose from, but the state should switch to the node that corresponds to the response the player selects. The functions "Get First Valid Transition" and "Get Valid Transitions" are utilities that can help with this.
 
